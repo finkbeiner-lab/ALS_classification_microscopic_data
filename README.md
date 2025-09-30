@@ -1,1 +1,0 @@
-# ALS_classification_microscopic_data
