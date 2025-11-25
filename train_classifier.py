@@ -218,7 +218,7 @@ def train_classifier(train_loader, val_loader, device, simclr_model, num_classes
     #    param.requires_grad = False
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
     running_loss = 0.0
     total_samples = 0
     train_losses = []
@@ -295,26 +295,28 @@ if __name__ == '__main__':
     #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/runs/Aug28_04-11-23_kif-gh200-02.gladstone.internal/checkpoints/model.pth"
     #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/GSGT_T6/runs/Aug29_05-31-02_kif-gh200-01.gladstone.internal/checkpoints/model.pth"
     #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/GSGT_T6/runs/Sep05_10-18-04_kif-gh200-04.gladstone.internal/checkpoints/model.pth"
-    MODEL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/runs/Sep17_11-58-45_kif-gh200-02.gladstone.internal/checkpoints/model.pth"
-    MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/runs/Sep19_12-43-04_kif-gh200-03.gladstone.internal/checkpoints/model.pth" 
-
+    #MODEL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/runs/Sep17_11-58-45_kif-gh200-02.gladstone.internal/checkpoints/model.pth"
+    #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/runs/Sep19_12-43-04_kif-gh200-03.gladstone.internal/checkpoints/model.pth" 
+    MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/runs/Oct28_11-10-49_kif-gh200-02.gladstone.internal/checkpoints/model.pth" 
+    
 
     #TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/train/" --TDP 43
-    TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/train/"
+    #TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/train/"
+    TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/train/"
     #TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/train/"
     #VAL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/val/"
-    VAL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/val/"    
+    VAL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/val/"    
     #TEST_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/test/"
-    TEST_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/test/"
+    TEST_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/test/"
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d %H-%M-%S")
-    model_checkpoints_folder = '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/saved_models/'+str(formatted_datetime)
+    model_checkpoints_folder = '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/saved_models/'+str(formatted_datetime)
     os.makedirs(model_checkpoints_folder)
     #plot_save_path =  '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/using_resnet1_model_train_val_new_loss_curve.png'
     #plot_save_path =  '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/Results/'+ MODEL_PATH.split("/")[-3]+'_loss_curve.png'
-    plot_save_path =  '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/Results/'+ MODEL_PATH.split("/")[-3]+'_loss_curve.png'
+    plot_save_path =  '/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/Results/'+ MODEL_PATH.split("/")[-3]+'_loss_curve.png'
     input_shape = (224,224,3)
-    batch_size = 8
+    batch_size = 4
     num_workers = 8
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     data_transforms = transforms.Compose([
@@ -340,7 +342,7 @@ if __name__ == '__main__':
     #simclr_model = load_pretrained_vitsimclr_model(model_path)
     
     num_classes = 2
-    num_epochs = 25
+    num_epochs = 75
     
     model, train_losses, val_losses = train_classifier(train_loader, val_loader, device, simclr_model, num_classes, num_epochs, model_checkpoints_folder)
     torch.save(model.state_dict(), os.path.join(model_checkpoints_folder, 'model.pth'))
