@@ -47,7 +47,7 @@ class ResNetSimCLR(nn.Module):
 
     def __init__(self, base_model, out_dim):
         super(ResNetSimCLR, self).__init__()
-        self.resnet_dict = {"resnet18": models.resnet18(pretrained=False, norm_layer=nn.InstanceNorm2d),
+        self.resnet_dict = {"resnet18": models.resnet18(pretrained=False),    #, norm_layer=nn.InstanceNorm2d),
                             "resnet50": models.resnet50(pretrained=False)}
 
         resnet = self._get_basemodel(base_model)
@@ -167,7 +167,7 @@ class SimCLRClassifier(nn.Module):
         super(SimCLRClassifier, self).__init__()
         self.encoder = encoder
         self.classifier = nn.Sequential(
-            nn.Linear(2048, 224), #old 2048
+            nn.Linear(512, 224), #old 2048 for resnet 50, 512 for resnet 18
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(224, num_classes)
@@ -178,8 +178,8 @@ class SimCLRClassifier(nn.Module):
         out = self.classifier(features)
         return out
     
-def load_pretrained_simclr_model(model_path):
-    model = ResNetSimCLR(base_model= "resnet50",out_dim=2 )# .to(self.device)
+def load_pretrained_simclr_model(model_path,base_model= "resnet50"):
+    model = ResNetSimCLR(base_model=base_model,out_dim=2 )# .to(self.device)
     state_dict = torch.load(model_path)
     model.load_state_dict(state_dict)
     model.to(device)
@@ -297,7 +297,10 @@ if __name__ == '__main__':
     #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/GSGT_T6/runs/Sep05_10-18-04_kif-gh200-04.gladstone.internal/checkpoints/model.pth"
     #MODEL_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/runs/Sep17_11-58-45_kif-gh200-02.gladstone.internal/checkpoints/model.pth"
     #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/runs/Sep19_12-43-04_kif-gh200-03.gladstone.internal/checkpoints/model.pth" 
-    MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/runs/Oct28_11-10-49_kif-gh200-02.gladstone.internal/checkpoints/model.pth" 
+    #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/runs/Oct28_11-10-49_kif-gh200-02.gladstone.internal/checkpoints/model.pth" 
+    
+    #MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/runs/Oct28_11-10-49_kif-gh200-02.gladstone.internal/checkpoints/model.pth" 
+    MODEL_PATH =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/CODES/runs/Dec04_22-44-11_kif-gh200-01.gladstone.internal/checkpoints/model.pth"
     
 
     #TRAIN_PATH = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/train/" --TDP 43
@@ -338,11 +341,11 @@ if __name__ == '__main__':
     #valid_loader  = get_val_data_loaders(val_dataset, batch_size,num_workers)
 
     #train_loader, valid_loader = get_train_validation_data_loaders(train_dataset, batch_size, num_workers, valid_size)
-    simclr_model = load_pretrained_simclr_model(MODEL_PATH)
+    simclr_model = load_pretrained_simclr_model(MODEL_PATH, "resnet18")
     #simclr_model = load_pretrained_vitsimclr_model(model_path)
     
     num_classes = 2
-    num_epochs = 75
+    num_epochs = 1
     
     model, train_losses, val_losses = train_classifier(train_loader, val_loader, device, simclr_model, num_classes, num_epochs, model_checkpoints_folder)
     torch.save(model.state_dict(), os.path.join(model_checkpoints_folder, 'model.pth'))

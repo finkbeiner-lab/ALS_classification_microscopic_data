@@ -10,7 +10,8 @@ gpu_ids: (0,1)
 
 model:
   out_dim: 2
-  base_model: "resnet50"
+  #base_model: "resnet50"
+  base_model: "resnet18"
   #base_model: "vit_base_patch16_224"
 dataset:
   num_workers: 10

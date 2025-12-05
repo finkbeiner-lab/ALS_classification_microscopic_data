@@ -11,10 +11,10 @@ import tifffile
 
 np.random.seed(0)
 
-patch_path  =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_Sporadic/patches.csv"
-#patch_path  =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/All_C9ORF72/patches.csv"
-#patch_path  =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/GSGT_T6/patches.csv"
 
+#patch_path  =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/GSGT_T6/patches.csv"
+#patch_path  =  "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/C9ORF72_T6/patches.csv"
+patch_path  = "/gladstone/finkbeiner/steve/work/data/npsad_data/monika/Julia_TDP43/Sporadic_T6/patches.csv"
 
 class Dataset():
     def __init__(self, csv_file, transform=None):
